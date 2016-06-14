@@ -1,0 +1,18 @@
+{
+  "name": "mysql-easy",
+  "version": "0.0.1",
+  "description": "MySQL wrapper for easy access",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/test1.js"
+  },
+  "keywords": [
+    "mysql",
+    "promise"
+  ],
+  "author": "Bacher <bacherko@gmail.com>",
+  "license": "ISC",
+  "dependencies": {
+    "mysql": "^2.11.1"
+  }
+}
