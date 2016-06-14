@@ -1,6 +1,6 @@
 {
   "name": "mysql-easy",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "MySQL wrapper for easy access",
   "main": "index.js",
   "scripts": {
@@ -10,6 +10,10 @@
     "mysql",
     "promise"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Bacher/mysql-easy"
+  },
   "author": "Bacher <bacherko@gmail.com>",
   "license": "ISC",
   "dependencies": {

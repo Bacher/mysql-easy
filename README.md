@@ -30,8 +30,8 @@ db.query('SELECT * FROM `users` WHERE `id` = ?', [12]).then(results => ...).catc
 ````
 
 #### Method "select":
- *  **tableName**: string _(optional)_
- *  **fields**: Array|Object|string
+ *  **tableName**: string
+ *  **fields**: Array|Object|string _(optional)_
  *  **where**: Object|string _(optional)_
  *  **limit**: number _(optional)_
  *  **offset**: number _(optional)_
@@ -40,6 +40,9 @@ db.select('users', ['id', 'user_name'], { id: 12 }).then(results => ...);
 ````
 
 #### Method "selectOne":
+ *  **tableName**: string
+ *  **fields**: Array|Object|string _(optional)_
+ *  **where**: Object|string _(optional)_
 ````javascript
 db.selectOne('users', ['id', 'user_name'], { id: 12 }).then(user => {
     console.log(user['id']);
@@ -48,6 +51,9 @@ db.selectOne('users', ['id', 'user_name'], { id: 12 }).then(user => {
 ````
 
 #### Method "selectExactOne" (like selectOne but throw error if item not found):
+ *  **tableName**: string
+ *  **fields**: Array|Object|string _(optional)_
+ *  **where**: Object|string _(optional)_
 ````javascript
 db.selectExactOne('users', ['id', 'user_name'], { id: 12 }).catch(err => {
     console.error(err);
@@ -55,6 +61,8 @@ db.selectExactOne('users', ['id', 'user_name'], { id: 12 }).catch(err => {
 ````
 
 #### Method "insert":
+ *  **tableName**: string
+ *  **data**: Object
 ````javascript
 db.insert('users', {
     user_name: 'user#331',
@@ -65,6 +73,8 @@ db.insert('users', {
 ````
 
 #### Method "delete" or "deleteFrom":
+ *  **tableName**: string
+ *  **where**: Object|string
 ````javascript
 db.delete('users', { id: 12 }).then(...);
 ````
