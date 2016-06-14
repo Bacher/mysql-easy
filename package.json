@@ -1,7 +1,7 @@
 {
   "name": "mysql-easy",
-  "version": "0.0.3",
-  "description": "MySQL wrapper for easy access",
+  "version": "0.0.4",
+  "description": "MySQL driver wrapper for easy work (with promises)",
   "main": "index.js",
   "scripts": {
     "test": "node test/test1.js"
