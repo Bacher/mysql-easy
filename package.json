@@ -1,6 +1,6 @@
 {
   "name": "mysql-easy",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "MySQL wrapper for easy access",
   "main": "index.js",
   "scripts": {
@@ -18,5 +18,10 @@
   "license": "ISC",
   "dependencies": {
     "mysql": "^2.11.1"
-  }
+  },
+  "files": [
+    "index.js",
+    "test/",
+    "README.md"
+  ]
 }

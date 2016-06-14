@@ -13,13 +13,27 @@ Parameter **where** in all methods can be one of:
 ### Initial: 
 ````javascript
 var mysqlEasy = require('mysql-easy');
+````
 
+## Static methods:
+
+#### Method "createConnection" and "createPool":
+(arguments similar to methods with same names in module "mysql" https://www.npmjs.com/package/mysql)
+````javascript
 var db = mysqlEasy.createPool({
     host: 'localhost',
     database: 'test',
     user: 'root',
     password: ''
 });
+````
+
+#### Method "format":
+ *  **sqlQuery**: string
+ *  **params**: Array _(optional)_
+````javascript
+mysqlEasy.format('SELECT * FROM ?? WHERE id = ?', ['users', 12])
+> "SELECT * FROM `users` WHERE id = '12'"
 ````
 
 ## Methods:

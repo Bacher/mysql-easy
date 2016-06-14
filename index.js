@@ -21,6 +21,10 @@ class MySQLEasy {
         return new MySQLEasy(_private, mysql.createPool(options));
     }
 
+    static format(sqlQuery, params) {
+        return mysql.format(sqlQuery, params);
+    }
+
     /**
      * Constructor is hidden, use static methods "createConnection" or "createPool".
      * @protected
