@@ -21,9 +21,9 @@ var mysqlEasy = require('mysql-easy');
 (arguments similar to methods with same names in module "mysql" https://www.npmjs.com/package/mysql)
 ````javascript
 var db = mysqlEasy.createPool({
-    host: 'localhost',
+    host:     'localhost',
     database: 'test',
-    user: 'root',
+    user:     'root',
     password: ''
 });
 ````
@@ -72,8 +72,8 @@ db.selectOne({
     fields: { id: 'id', userName: 'user_name' },
     where: { id: 12 }
 ).then(user => {
-    console.log(user['id']);
-    console.log(user['user_name']);
+    console.log(user.id);
+    console.log(user.userName);
 });
 ````
 
