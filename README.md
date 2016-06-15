@@ -18,7 +18,7 @@ var mysqlEasy = require('mysql-easy');
 ## Static methods:
 
 #### Method "createConnection" and "createPool":
-(arguments similar to methods with same names in module "mysql" https://www.npmjs.com/package/mysql)
+(arguments similar to methods with same names in module "mysql" https://www.npmjs.com/package/mysql#establishing-connections)
 ````javascript
 var db = mysqlEasy.createPool({
     host:     'localhost',
@@ -39,7 +39,7 @@ mysqlEasy.format('SELECT * FROM ?? WHERE id = ?', ['users', 12])
 ## Methods:
 
 #### Method "query":
-(method similar to "query" in module "mysql" https://www.npmjs.com/package/mysql)
+(method similar to "query" in module "mysql" https://www.npmjs.com/package/mysql#escaping-query-values)
  *  **sqlQuery**: string
  *  **params**: Array _(optional)_
 ````javascript
