@@ -1,6 +1,6 @@
 {
   "name": "mysql-easy",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "MySQL driver wrapper for easy work (with promises)",
   "main": "index.js",
   "scripts": {

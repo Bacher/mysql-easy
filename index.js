@@ -227,7 +227,7 @@ function getFields(fields) {
             var sqlFields = [];
             for (var fieldName in fields) {
                 if (fields.hasOwnProperty(fieldName))
-                    sqlFields.push(iden(fieldName) + ' AS ' + iden(fields[fieldName]));
+                    sqlFields.push(iden(fields[fieldName]) + ' AS ' + iden(fieldName));
             }
             return sqlFields.join(',');
 

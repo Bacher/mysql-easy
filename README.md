@@ -2,7 +2,7 @@
 
 Parameter **fields** in all methods can be one of:
   * Array - `['id', 'user_name']`
-  * Object - key - colomn name, value - result field name `{ id: 'id', user_name': 'userName' }`
+  * Object - key - result field name, value - colomn name `{ id: 'id', userName: 'user_name' }`
   * String - `'id, user_name AS userName'` (raw format)
   
 Parameter **where** in all methods can be one of:
@@ -69,7 +69,7 @@ db.select({
 ````javascript
 db.selectOne({
     table: 'users',
-    fields: ['id', 'user_name'],
+    fields: { id: 'id', userName: 'user_name' },
     where: { id: 12 }
 ).then(user => {
     console.log(user['id']);

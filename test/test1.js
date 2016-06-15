@@ -35,8 +35,8 @@ Promise.resolve()
     .then(() => db.selectExactOne({
         table: 'myTableName',
         fields: {
-            'id': 'id',
-            'user_id': 'userId'
+            id:     'id',
+            userId: 'user_id'
         },
         where: {
             'id': 'helloWorld',
