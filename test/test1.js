@@ -34,10 +34,10 @@ Promise.resolve()
         'id': 'id',
         'user_id': 'userId'
     }, {
-        'id': 'helloWorld',
+        'id': 'hello World',
         'account_name': 'spy007'
     }).then(result => {
-        assert(savedSqlQuery, "SELECT `id` AS `id`,`user_id` AS `userId` FROM `myTableName` WHERE `id` = 'helloWorld' AND `account_name` = 'spy007' LIMIT 1");
+        assert.equal(savedSqlQuery, "SELECT `id` AS `id`,`user_id` AS `userId` FROM `myTableName` WHERE `id` = 'helloWorld' AND `account_name` = 'spy007' LIMIT 1");
         console.log('[ OK ]', savedSqlQuery);
     }).catch(err => {
         console.error(err);
@@ -46,7 +46,7 @@ Promise.resolve()
         'id': 'helloWorld',
         'account_name': 'spy007'
     }).then(result => {
-        assert(savedSqlQuery === "INSERT INTO 'myTableName' SET `id` = 'helloWorld', `account_name` = 'spy007'");
+        assert.equal(savedSqlQuery, "INSERT INTO 'myTableName' SET `id` = 'helloWorld', `account_name` = 'spy007'");
         console.log('[ OK ]', savedSqlQuery);
     }).catch(err => {
         console.error(err);
@@ -54,7 +54,7 @@ Promise.resolve()
         'id': 'helloWorld',
         'account_name': 'spy007'
     }).then(result => {
-        assert(savedSqlQuery === "DELETE FROM `myTableName` WHERE `id` = 'helloWorld' AND `account_name` = 'spy007'");
+        assert.equal(savedSqlQuery, "DELETE FROM `myTableName` WHERE `id` = 'helloWorld' AND `account_name` = 'spy007'");
         console.log('[ OK ]', savedSqlQuery);
     }).catch(err => {
         console.error(err);

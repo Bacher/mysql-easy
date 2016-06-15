@@ -77,6 +77,7 @@ db.selectExactOne('users', ['id', 'user_name'], { id: 12 }).catch(err => {
 #### Method "insert":
  *  **tableName**: string
  *  **data**: Object
+ *  **where**: Object|string
 ````javascript
 db.insert('users', {
     user_name: 'user#331',
@@ -84,6 +85,17 @@ db.insert('users', {
 }).then(result => {
     console.log('New user ID: %s', result.insertId);
 });
+````javascript
+db.update('users', {
+    age: 37
+}, {
+    id: 12
+}).then(...);
+````
+
+#### Method "update":
+ *  **tableName**: string
+ *  **data**: Object
 ````
 
 #### Method "delete" or "deleteFrom":

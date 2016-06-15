@@ -21,6 +21,12 @@ class MySQLEasy {
         return new MySQLEasy(_private, mysql.createPool(options));
     }
 
+    /**
+     * Format SQL query.
+     * @param {string} sqlQuery
+     * @param {Array} [params]
+     * @returns {string}
+     */
     static format(sqlQuery, params) {
         return mysql.format(sqlQuery, params);
     }
@@ -59,8 +65,10 @@ class MySQLEasy {
      * @returns {Promise}
      */
     query(sqlQuery, params) {
-        return new Promise((resolve, reject) => {
-            this._conn.query(sqlQuery, params, (err, res) => {
+        var that = this;
+
+        return new Promise(function(resolve, reject) {
+            that._conn.query(sqlQuery, params, function(err, res) {
                 if (err) reject(err);
                 else resolve(res);
             });
@@ -87,11 +95,26 @@ class MySQLEasy {
             throw new Error('Parameter "limit" must be a number');
         }
 
-        return this.query('SELECT ' + sqlFields +
-            ' FROM ' + iden(tableName) +
-            (sqlWhere ? ' WHERE ' + sqlWhere : '') +
-            (offset ? ' OFFSET ' + offset : '') +
-            (limit ? ' LIMIT ' + limit : ''));
+        var queryParts = [
+            'SELECT',
+            sqlFields,
+            'FROM',
+            iden(tableName)
+        ];
+
+        if (sqlWhere) {
+            queryParts.push('WHERE', sqlWhere);
+        }
+
+        if (offset) {
+            queryParts.push('OFFSET', offset);
+        }
+
+        if (limit) {
+            queryParts.push('LIMIT', limit);
+        }
+
+        return this.query(queryParts.join(' '));
     }
 
     /**
@@ -102,7 +125,7 @@ class MySQLEasy {
      * @returns {Promise}
      */
     selectOne(tableName, fields, where) {
-        return this.select(tableName, fields, where, 1).then(items => items[0] || null);
+        return this.select(tableName, fields, where, 1).then(function(items) { return items[0] || null });
     }
 
     /**
@@ -113,7 +136,7 @@ class MySQLEasy {
      * @returns {Promise}
      */
     selectExactOne(tableName, fields, where) {
-        return this.select(tableName, fields, where, 1).then(items => {
+        return this.select(tableName, fields, where, 1).then(function(items) {
             if (items.length === 0) {
                 throw new Error('Record not found');
             }
@@ -130,6 +153,19 @@ class MySQLEasy {
      */
     insert(tableName, objectData) {
         return this.query('INSERT INTO ? SET ?', [tableName, objectData]);
+    }
+
+    /**
+     * Update record.
+     * @param {string} tableName
+     * @param {Object} objectData
+     * @param {Object|string} where
+     * @returns {Promise}
+     */
+    update(tableName, objectData, where) {
+        var sqlWhere = getWhere(where);
+
+        return this.query('UPDATE ?? SET ?' + (sqlWhere ? ' WHERE ' + sqlWhere : ''), [tableName, objectData]);
     }
 
     /**
