@@ -50,7 +50,11 @@ db.query('SELECT * FROM `users` WHERE `id` = ?', [12]).then(results => ...).catc
  *  **limit**: number _(optional)_
  *  **offset**: number _(optional)_
 ````javascript
-db.select('users', ['id', 'user_name'], { id: 12 }).then(results => ...);
+db.select({
+    table: 'users',
+    fields: ['id', 'user_name'],
+    where: { id: 12 }
+).then(results => ...);
 ````
 
 #### Method "selectOne":
@@ -58,7 +62,11 @@ db.select('users', ['id', 'user_name'], { id: 12 }).then(results => ...);
  *  **fields**: Array|Object|string _(optional)_
  *  **where**: Object|string _(optional)_
 ````javascript
-db.selectOne('users', ['id', 'user_name'], { id: 12 }).then(user => {
+db.selectOne({
+    table: 'users',
+    fields: ['id', 'user_name'],
+    where: { id: 12 }
+).then(user => {
     console.log(user['id']);
     console.log(user['user_name']);
 });
@@ -69,7 +77,11 @@ db.selectOne('users', ['id', 'user_name'], { id: 12 }).then(user => {
  *  **fields**: Array|Object|string _(optional)_
  *  **where**: Object|string _(optional)_
 ````javascript
-db.selectExactOne('users', ['id', 'user_name'], { id: 12 }).catch(err => {
+db.selectExactOne({
+    table: 'users',
+    fields: ['id', 'user_name'],
+    where: { id: 12 }
+).catch(err => {
     console.error(err);
 });
 ````
@@ -91,9 +103,7 @@ db.insert('users', {
  *  **data**: Object
  *  **where**: Object|string
 ````javascript
-db.update('users', {
-    age: 37
-}, {
+db.update('users', newUserState, {
     id: 12
 }).then(...);
 ````

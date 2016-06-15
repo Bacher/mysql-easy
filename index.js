@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 
 const _private = Symbol();
+const _select = Symbol();
 
 class MySQLEasy {
     /**
@@ -75,25 +76,20 @@ class MySQLEasy {
         });
     }
 
-    /**
-     * Select rows by where filter.
-     * @param {string} tableName
-     * @param {Object|Array|string} [fields]
-     * @param {Object|string} [where]
-     * @param {number} [limit]
-     * @param {number} [offset]
-     * @returns {Promise}
-     */
-    select(tableName, fields, where, limit, offset) {
-        var sqlFields = getFields(fields);
-        var sqlWhere = getWhere(where);
+    [_select](tableName, fields, where, limit, offset) {
+        if (!tableName) {
+            throw new Error('Parameter "table" missing');
+        }
 
-        if (arguments.length >= 5 && typeof offset !== 'number') {
+        if (offset != null && typeof offset !== 'number') {
             throw new Error('Parameter "offset" must be a number');
         }
-        if (arguments.length >= 4 && typeof limit !== 'number') {
+        if (limit != null && typeof limit !== 'number') {
             throw new Error('Parameter "limit" must be a number');
         }
+
+        var sqlFields = getFields(fields);
+        var sqlWhere = getWhere(where);
 
         var queryParts = [
             'SELECT',
@@ -118,25 +114,41 @@ class MySQLEasy {
     }
 
     /**
-     * Select one record.
-     * @param {string} tableName
-     * @param {Object|Array|string} [fields]
-     * @param {Object|string} [where]
+     * Select rows by where filter.
+     * @param {Object} params
+     * @param {string} params.table
+     * @param {Object|Array|string} [params.fields]
+     * @param {Object|string} [params.where]
+     * @param {number} [params.limit]
+     * @param {number} [params.offset]
      * @returns {Promise}
      */
-    selectOne(tableName, fields, where) {
-        return this.select(tableName, fields, where, 1).then(function(items) { return items[0] || null });
+    select(params) {
+        return this[_select](params.table, params.fields, params.where, params.limit, params.offset);
+    }
+
+    /**
+     * Select one record.
+     * @param {Object} params
+     * @param {string} params.table
+     * @param {Object|Array|string} [params.fields]
+     * @param {Object|string} [params.where]
+     * @returns {Promise}
+     */
+    selectOne(params) {
+        return this[_select](params.table, params.fields, params.where, 1).then(function(items) { return items[0] || null });
     }
 
     /**
      * Select one or throw error if record not found.
-     * @param {string} tableName
-     * @param {Object|Array|string} [fields]
-     * @param {Object|string} [where]
+     * @param {Object} params
+     * @param {string} params.table
+     * @param {Object|Array|string} [params.fields]
+     * @param {Object|string} [params.where]
      * @returns {Promise}
      */
-    selectExactOne(tableName, fields, where) {
-        return this.select(tableName, fields, where, 1).then(function(items) {
+    selectExactOne(params) {
+        return this[_select](params.table, params.fields, params.where, 1).then(function(items) {
             if (items.length === 0) {
                 throw new Error('Record not found');
             }
@@ -251,6 +263,17 @@ function getWhere(where, isRequired) {
             throw new Error('Invalid arguments');
         }
     }
+}
+
+function extend(base) {
+    for (var i = 1, length = arguments.length; i < length; i++) {
+        var curObject = arguments[i];
+        for (var propName in curObject) {
+            if (curObject.hasOwnProperty(propName))
+                base[propName] = curObject[propName];
+        }
+    }
+    return base;
 }
 
 module.exports = MySQLEasy;

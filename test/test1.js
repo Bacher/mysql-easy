@@ -1,5 +1,7 @@
 var savedSqlQuery;
 
+require('errors-catcher').catchAll();
+
 var assert = require('assert');
 var mysql = require('mysql');
 
@@ -30,12 +32,16 @@ var MySQLEasy = require('../index.js');
 var db = MySQLEasy.createPool({});
 
 Promise.resolve()
-    .then(() => db.selectExactOne('myTableName', {
-        'id': 'id',
-        'user_id': 'userId'
-    }, {
-        'id': 'hello World',
-        'account_name': 'spy007'
+    .then(() => db.selectExactOne({
+        table: 'myTableName',
+        fields: {
+            'id': 'id',
+            'user_id': 'userId'
+        },
+        where: {
+            'id': 'helloWorld',
+            'account_name': 'spy007'
+        }
     }).then(result => {
         assert.equal(savedSqlQuery, "SELECT `id` AS `id`,`user_id` AS `userId` FROM `myTableName` WHERE `id` = 'helloWorld' AND `account_name` = 'spy007' LIMIT 1");
         console.log('[ OK ]', savedSqlQuery);
@@ -58,4 +64,6 @@ Promise.resolve()
         console.log('[ OK ]', savedSqlQuery);
     }).catch(err => {
         console.error(err);
-    }));
+    })).catch(err => {
+        console.error(err);
+    });
