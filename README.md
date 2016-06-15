@@ -39,12 +39,14 @@ mysqlEasy.format('SELECT * FROM ?? WHERE id = ?', ['users', 12])
 ## Methods:
 
 #### Method "query":
+ *  **sqlQuery**: string
+ *  **params**: Array
 ````javascript
 db.query('SELECT * FROM `users` WHERE `id` = ?', [12]).then(results => ...).catch(err => ...);
 ````
 
 #### Method "select":
- *  **tableName**: string
+ *  **table**: string
  *  **fields**: Array|Object|string _(optional)_
  *  **where**: Object|string _(optional)_
  *  **limit**: number _(optional)_
@@ -58,7 +60,7 @@ db.select({
 ````
 
 #### Method "selectOne":
- *  **tableName**: string
+ *  **table**: string
  *  **fields**: Array|Object|string _(optional)_
  *  **where**: Object|string _(optional)_
 ````javascript
@@ -73,7 +75,7 @@ db.selectOne({
 ````
 
 #### Method "selectExactOne" (like selectOne but throw error if item not found):
- *  **tableName**: string
+ *  **table**: string
  *  **fields**: Array|Object|string _(optional)_
  *  **where**: Object|string _(optional)_
 ````javascript
