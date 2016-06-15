@@ -39,18 +39,20 @@ mysqlEasy.format('SELECT * FROM ?? WHERE id = ?', ['users', 12])
 ## Methods:
 
 #### Method "query":
+(method similar to "query" in module "mysql" https://www.npmjs.com/package/mysql)
  *  **sqlQuery**: string
- *  **params**: Array
+ *  **params**: Array _(optional)_
 ````javascript
 db.query('SELECT * FROM `users` WHERE `id` = ?', [12]).then(results => ...).catch(err => ...);
 ````
 
 #### Method "select":
- *  **table**: string
- *  **fields**: Array|Object|string _(optional)_
- *  **where**: Object|string _(optional)_
- *  **limit**: number _(optional)_
- *  **offset**: number _(optional)_
+ *  **params**: Object
+     *  **table**: string
+     *  **fields**: Array|Object|string _(optional)_
+     *  **where**: Object|string _(optional)_
+     *  **limit**: number _(optional)_
+     *  **offset**: number _(optional)_
 ````javascript
 db.select({
     table: 'users',
@@ -60,9 +62,10 @@ db.select({
 ````
 
 #### Method "selectOne":
- *  **table**: string
- *  **fields**: Array|Object|string _(optional)_
- *  **where**: Object|string _(optional)_
+ *  **params**: Object
+     *  **table**: string
+     *  **fields**: Array|Object|string _(optional)_
+     *  **where**: Object|string _(optional)_
 ````javascript
 db.selectOne({
     table: 'users',
@@ -75,9 +78,10 @@ db.selectOne({
 ````
 
 #### Method "selectExactOne" (like selectOne but throw error if item not found):
- *  **table**: string
- *  **fields**: Array|Object|string _(optional)_
- *  **where**: Object|string _(optional)_
+ *  **params**: Object
+     *  **table**: string
+     *  **fields**: Array|Object|string _(optional)_
+     *  **where**: Object|string _(optional)_
 ````javascript
 db.selectExactOne({
     table: 'users',
