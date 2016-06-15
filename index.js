@@ -23,6 +23,15 @@ class MySQLEasy {
     }
 
     /**
+     * Wrap existing mysql connection or pool.
+     * @param {Pool|Connection} connection
+     * @returns {MySQLEasy}
+     */
+    static wrap(connection) {
+        return new MySQLEasy(connection);
+    }
+
+    /**
      * Format SQL query.
      * @param {string} sqlQuery
      * @param {Array} [params]
