@@ -24,7 +24,7 @@ class MySQLEasy {
 
     /**
      * Wrap existing mysql connection or pool.
-     * @param {Pool|Connection} connection
+     * @param {Connection|Pool} connection
      * @returns {MySQLEasy}
      */
     static wrap(connection) {
@@ -45,27 +45,13 @@ class MySQLEasy {
      * Constructor is hidden, use static methods "createConnection" or "createPool".
      * @protected
      * @param {Symbol} _access
-     * @param {Pool|Connection} conn
+     * @param {Connection|Pool} conn
      */
     constructor(_access, conn) {
         if (_access !== _private) {
             throw new Error('MySQLEasy can\'t be created by "new", use "createConnection" or "createPool" instead');
         }
         this._conn = conn;
-    }
-
-    /**
-     * Close connection.
-     */
-    end() {
-        this._conn.end();
-    }
-
-    /**
-     * Close connection.
-     */
-    close() {
-        this.end();
     }
 
     /**
@@ -85,7 +71,7 @@ class MySQLEasy {
         });
     }
 
-    [_select](tableName, fields, where, limit, offset) {
+    [_select](tableName, fields, where, order, limit, offset) {
         if (!tableName) {
             throw new Error('Parameter "table" missing');
         }
@@ -99,6 +85,7 @@ class MySQLEasy {
 
         var sqlFields = getFields(fields);
         var sqlWhere = getWhere(where);
+        var sqlOrder = getOrder(order);
 
         var queryParts = [
             'SELECT',
@@ -109,6 +96,10 @@ class MySQLEasy {
 
         if (sqlWhere) {
             queryParts.push('WHERE', sqlWhere);
+        }
+
+        if (sqlOrder) {
+            queryParts.push('ORDER BY', sqlOrder);
         }
 
         if (offset) {
@@ -128,12 +119,13 @@ class MySQLEasy {
      * @param {string} params.table
      * @param {Object|Array|string} [params.fields]
      * @param {Object|string} [params.where]
+     * @param {Object|string} [params.order]
      * @param {number} [params.limit]
      * @param {number} [params.offset]
      * @returns {Promise}
      */
     select(params) {
-        return this[_select](params.table, params.fields, params.where, params.limit, params.offset);
+        return this[_select](params.table, params.fields, params.where, params.order, params.limit, params.offset);
     }
 
     /**
@@ -142,10 +134,11 @@ class MySQLEasy {
      * @param {string} params.table
      * @param {Object|Array|string} [params.fields]
      * @param {Object|string} [params.where]
+     * @param {Object|string} [params.order]
      * @returns {Promise}
      */
     selectOne(params) {
-        return this[_select](params.table, params.fields, params.where, 1).then(function(items) { return items[0] || null });
+        return this[_select](params.table, params.fields, params.where, params.order, 1).then(function(items) { return items[0] || null });
     }
 
     /**
@@ -154,10 +147,11 @@ class MySQLEasy {
      * @param {string} params.table
      * @param {Object|Array|string} [params.fields]
      * @param {Object|string} [params.where]
+     * @param {Object|string} [params.order]
      * @returns {Promise}
      */
     selectExactOne(params) {
-        return this[_select](params.table, params.fields, params.where, 1).then(function(items) {
+        return this[_select](params.table, params.fields, params.where, params.order, 1).then(function(items) {
             if (items.length === 0) {
                 throw new Error('Record not found');
             }
@@ -173,7 +167,7 @@ class MySQLEasy {
      * @returns {Promise}
      */
     insert(tableName, objectData) {
-        return this.query('INSERT INTO ? SET ?', [tableName, objectData]);
+        return this.query('INSERT INTO ?? SET ?', [tableName, objectData]);
     }
 
     /**
@@ -210,6 +204,29 @@ class MySQLEasy {
     ['delete'](tableName, where) {
         return this.deleteFrom(tableName, where);
     }
+
+    /**
+     * Get underlying mysql pool or connection.
+     * @returns {Connection|Pool}
+     */
+    unwrap() {
+        return this._conn;
+    }
+
+    /**
+     * Close connection.
+     */
+    end() {
+        this._conn.end();
+    }
+
+    /**
+     * Close connection.
+     */
+    close() {
+        this.end();
+    }
+
 }
 
 function iden(title) {
@@ -271,6 +288,30 @@ function getWhere(where, isRequired) {
         } else {
             throw new Error('Invalid arguments');
         }
+    }
+}
+
+function getOrder(order) {
+    if (!order) {
+        return null;
+
+    } else if (typeof order === 'string') {
+        return order;
+
+    } else {
+        var orders = [];
+
+        for (var propName in order) {
+            if (order.hasOwnProperty(propName)) {
+                if (order[propName] < 0) {
+                    orders.push(iden(propName) + ' DESC');
+                } else {
+                    orders.push(iden(propName));
+                }
+            }
+        }
+
+        return orders.join(', ');
     }
 }
 

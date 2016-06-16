@@ -32,6 +32,25 @@ var MySQLEasy = require('../index.js');
 var db = MySQLEasy.createPool({});
 
 Promise.resolve()
+    .then(() => db.select({
+        table: 'myTableName',
+        fields: {
+            id:     'id',
+            userId: 'user_id'
+        },
+        where: {
+            'id': 'helloWorld',
+            'account_name': 'spy007'
+        },
+        order: {
+            'id': 1
+        }
+    }).then(result => {
+        assert.equal(savedSqlQuery, "SELECT `id` AS `id`,`user_id` AS `userId` FROM `myTableName` WHERE `id` = 'helloWorld' AND `account_name` = 'spy007' ORDER BY `id`");
+        console.log('[ OK ]', savedSqlQuery);
+    }).catch(err => {
+        console.error(err);
+    }))
     .then(() => db.selectExactOne({
         table: 'myTableName',
         fields: {
@@ -52,7 +71,7 @@ Promise.resolve()
         'id': 'helloWorld',
         'account_name': 'spy007'
     }).then(result => {
-        assert.equal(savedSqlQuery, "INSERT INTO 'myTableName' SET `id` = 'helloWorld', `account_name` = 'spy007'");
+        assert.equal(savedSqlQuery, "INSERT INTO `myTableName` SET `id` = 'helloWorld', `account_name` = 'spy007'");
         console.log('[ OK ]', savedSqlQuery);
     }).catch(err => {
         console.error(err);

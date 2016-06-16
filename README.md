@@ -8,6 +8,10 @@ Parameter **fields** in all methods can be one of:
 Parameter **where** in all methods can be one of:
   * Object - `{ id: 12, age: 27 }` equal is `id = 12 AND age = 27` 
   * String - `'balance > 12 OR age < 30'` (raw format)
+  
+Parameter **order** in all methods can be one of:
+  * Object - `{ id: 1, age: -1 }` equal is `ORDER BY id, age DESC ` 
+  * String - `'ORDER BY balance DESC, user_id'` (raw format)
 
 
 ### Initial: 
@@ -60,13 +64,15 @@ db.query('SELECT * FROM `users` WHERE `id` = ?', [12]).then(results => ...).catc
      *  **table**: string
      *  **fields**: Array|Object|string _(optional)_
      *  **where**: Object|string _(optional)_
+     *  **order**: Object|string _(optional)_
      *  **limit**: number _(optional)_
      *  **offset**: number _(optional)_
 ````javascript
 db.select({
     table: 'users',
     fields: ['id', 'user_name'],
-    where: { id: 12 }
+    where: { id: 12 },
+    order: { id: -1 }
 ).then(results => ...);
 ````
 
@@ -75,6 +81,7 @@ db.select({
      *  **table**: string
      *  **fields**: Array|Object|string _(optional)_
      *  **where**: Object|string _(optional)_
+     *  **order**: Object|string _(optional)_
 ````javascript
 db.selectOne({
     table: 'users',
@@ -91,6 +98,7 @@ db.selectOne({
      *  **table**: string
      *  **fields**: Array|Object|string _(optional)_
      *  **where**: Object|string _(optional)_
+     *  **order**: Object|string _(optional)_
 ````javascript
 db.selectExactOne({
     table: 'users',
@@ -133,4 +141,9 @@ db.delete('users', { id: 12 }).then(...);
 #### Method "end" or "close":
 ````javascript
 db.end();
+````
+
+### Method "unwrap":
+````javascript
+var underlyingMysqlConnection = db.unwrap();
 ````
