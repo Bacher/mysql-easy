@@ -42,6 +42,24 @@ class MySQLEasy {
     }
 
     /**
+     * Escape identifier.
+     * @param {string} id
+     * @returns {string}
+     */
+    static escapeId(id) {
+        return mysql.escapeId(id);
+    }
+
+    /**
+     * Escape value.
+     * @param {string} value
+     * @returns {string}
+     */
+    static escape(value) {
+        return mysql.escape(value);
+    }
+
+    /**
      * Constructor is hidden, use static methods "createConnection" or "createPool".
      * @protected
      * @param {Symbol} _access
@@ -228,6 +246,10 @@ class MySQLEasy {
     }
 
 }
+
+MySQLEasy.prototype.format   = MySQLEasy.format;
+MySQLEasy.prototype.escape   = MySQLEasy.escape;
+MySQLEasy.prototype.escapeId = MySQLEasy.escapeId;
 
 function iden(title) {
     return mysql.escapeId(title);

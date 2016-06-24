@@ -46,6 +46,20 @@ mysqlEasy.format('SELECT * FROM ?? WHERE id = ?', ['users', 12])
 > "SELECT * FROM `users` WHERE id = '12'"
 ````
 
+#### Method "escapeId":
+ *  **id**: string
+````javascript
+mysqlEasy.escapeId('myTableName')
+> "`myTableName`"
+````
+
+#### Method "escape":
+ *  **value**: string
+````javascript
+mysqlEasy.escape('myValue')
+> '"myValue"'
+````
+
 ## Constructor:
 Constructor is not directly accessible.
 
