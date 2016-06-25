@@ -9,6 +9,14 @@ const mysqlConnection = {
     escapeId: mysql.escapeId.bind(mysql)
 };
 
+function ok() {
+    assert(true);
+}
+
+function bad() {
+    assert(false);
+}
+
 function eq(...args) {
     assert.equal(...args);
 }
@@ -96,6 +104,100 @@ describe('Query check', () => {
                 });
 
                 this.queryMustBe('SELECT * FROM `hello` WHERE `field_1` = 100');
+            });
+
+            it('$gt', () => {
+                this.db.select({
+                    table: 'hello',
+                    where: {
+                        'field': {
+                            $gt: 3
+                        }
+                    }
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` WHERE `field` > 3');
+            });
+
+            it('$feild', () => {
+                this.db.select({
+                    table: 'hello',
+                    where: {
+                        'field': {
+                            $field: 'another_field'
+                        }
+                    }
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` WHERE `field` = `another_field`');
+            });
+
+            it('$feild in $gt', () => {
+                this.db.select({
+                    table: 'hello',
+                    where: {
+                        'field': {
+                            $gt: {
+                                $field: 'another_field'
+                            }
+                        }
+                    }
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` WHERE `field` > `another_field`');
+            });
+
+            it('throw error if empty object', () => {
+                try {
+                    this.db.select({
+                        table: 'hello',
+                        where: {
+                            'field': {
+                                $gt: {}
+                            }
+                        }
+                    });
+
+                    bad();
+                } catch(err) {
+                    ok();
+                }
+            });
+
+        });
+
+        describe('join', () => {
+
+            it('simple', () => {
+                this.db.select({
+                    table: 'user',
+                    join: {
+                        table: 'details' ,
+                        on: { 'user.id': { $field: 'details.user_id' } },
+                        type: 'left'
+                    }
+                });
+
+                this.queryMustBe('SELECT * FROM `user` LEFT JOIN `details` ON `user`.`id` = `details`.`user_id`');
+            });
+
+            it('simple', () => {
+                this.db.select({
+                    table: 'user',
+                    join: [{
+                        table: 'details' ,
+                        on: { 'user.id': { $field: 'details.user_id' } },
+                        type: 'left'
+                    }, {
+                        table: 'details2' ,
+                        on: { 'details2.user_id': { $field: 'details.user_id' } },
+                        type: 'left'
+                    }]
+                });
+
+                this.queryMustBe('SELECT * FROM `user` ' +
+                    'LEFT JOIN `details` ON `user`.`id` = `details`.`user_id` ' +
+                    'LEFT JOIN `details2` ON `details2`.`user_id` = `details`.`user_id`');
             });
 
         });

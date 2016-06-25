@@ -1,10 +1,10 @@
 {
   "name": "mysql-easy",
-  "version": "0.0.17",
+  "version": "0.1.0",
   "description": "MySQL driver wrapper for easy work (with promises)",
   "main": "lib/mysql-easy.js",
   "scripts": {
-    "test": "node test/test1.js"
+    "test": "./node_modules/.bin/mocha"
   },
   "keywords": [
     "mysql",
