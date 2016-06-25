@@ -1,6 +1,6 @@
 {
   "name": "mysql-easy",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "MySQL driver wrapper for easy work (with promises)",
   "main": "lib/mysql-easy.js",
   "scripts": {
@@ -25,7 +25,7 @@
     "mocha": "^2.5.3"
   },
   "files": [
-    "index.js",
+    "lib/",
     "test/",
     "README.md"
   ]
