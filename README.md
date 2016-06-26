@@ -1,18 +1,41 @@
 # MySQL driver wrapper for easy work (with promises)
 
-Parameter **fields** in all methods can be one of:
+### General options:
+Parameter **where** in all methods can be one of:
+  * Object - `{ id: 12, age: 27 }` 
+  * String - `'id = 12 AND age < 27'` (raw format)
+  
+Option "where" has "equal" default compare method, but you can use another:
+  * $in - `{ id: { $in: [1,2,5] } }`
+  * $is - `{ product_id: { $is: null } }`
+  * $isNot - `{ product_id: { $isNot: null } }`
+  * $gt - `{ age: { $gt: 25 } }`
+  * $gte - `{ age: { $gte: 25 } }`
+  * $lt - `{ age: { $lt: 25 } }`
+  * $lte - `{ age: { $lte: 25 } }`
+  * $field - `{ id: { $field: 'another_id' } }` => `'`id` = `another_id`'`
+  * $raw - `{ position: { $raw: 'POINT(1,3)' } }`
+
+You can combine few conditions (they will be combined by AND):
+`{ age: { $gt: 10, $lte: 25 } }`
+
+Note:
+`{ id: 3 }` and `{ id: { $eq: 3 } }` takes same result
+`{ product_id: null }` and `{ product_id: { $is: null } }` takes same result
+
+### "Select" specific options:
+Parameter **fields** can be one of:
   * Array - `['id', 'user_name']`
   * Object - key - result field name, value - colomn name `{ id: 'id', userName: 'user_name' }`
   * String - `'id, user_name AS userName'` (raw format)
-  
-Parameter **where** in all methods can be one of:
-  * Object - `{ id: 12, age: 27 }` equal is `id = 12 AND age = 27` 
-  * String - `'balance > 12 OR age < 30'` (raw format)
-  
-Parameter **order** in all methods can be one of:
+
+Parameter **order** can be one of:
   * Object - `{ id: 1, age: -1 }` equal is `ORDER BY id, age DESC ` 
   * String - `'ORDER BY balance DESC, user_id'` (raw format)
 
+Parameter **join** can be:
+  * Object - `{ table: 'another_table', on: { 'main_table.field_name1: { $field: 'another_table.field_name2' } }, type: 'left' }`
+  * String - `'LEFT JOIN another_table ON main_table.field_name1 = another_table.field_name2'` (raw format)
 
 ### Initial: 
 ````javascript

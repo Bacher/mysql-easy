@@ -4,8 +4,8 @@ const mysql = require('../lib/mysql-easy');
 /* global describe, beforeEach, it  */
 
 const mysqlConnection = {
-    format: mysql.format.bind(mysql),
-    escape: mysql.escape.bind(mysql),
+    format:   mysql.format.bind(mysql),
+    escape:   mysql.escape.bind(mysql),
     escapeId: mysql.escapeId.bind(mysql)
 };
 
@@ -168,7 +168,7 @@ describe('Query check', () => {
 
         describe('join', () => {
 
-            it('simple', () => {
+            it('as object', () => {
                 this.db.select({
                     table: 'user',
                     join: {
@@ -181,7 +181,7 @@ describe('Query check', () => {
                 this.queryMustBe('SELECT * FROM `user` LEFT JOIN `details` ON `user`.`id` = `details`.`user_id`');
             });
 
-            it('simple', () => {
+            it('as array', () => {
                 this.db.select({
                     table: 'user',
                     join: [{
@@ -195,9 +195,22 @@ describe('Query check', () => {
                     }]
                 });
 
-                this.queryMustBe('SELECT * FROM `user` ' +
+                this.queryMustBe(
+                    'SELECT * FROM `user` ' +
                     'LEFT JOIN `details` ON `user`.`id` = `details`.`user_id` ' +
                     'LEFT JOIN `details2` ON `details2`.`user_id` = `details`.`user_id`');
+            });
+
+            it('as raw', () => {
+                this.db.select({
+                    table: 'main_table',
+                    join: 'LEFT JOIN another_table ON main_table.field_name1 = another_table.field_name2'
+                });
+
+                this.queryMustBe(
+                    'SELECT * ' +
+                    'FROM `main_table` ' +
+                    'LEFT JOIN another_table ON main_table.field_name1 = another_table.field_name2');
             });
 
         });
@@ -295,6 +308,31 @@ describe('Query check', () => {
             this.queryMustBe(
                 "DELETE FROM `myTableName` " +
                 "WHERE `id` = 'helloWorld' AND `account_name` = 'spy007'");
+        });
+
+        it('join', () => {
+            this.db.select({
+                table: { user: 'user' },
+                join: {
+                    table: { details: 'user_details' },
+                    on: { 'user.id': { $field: 'details.user_id' } },
+                    type: 'left'
+                },
+                fields: {
+                    id:       'user.id',
+                    userName: 'user.user_name',
+                    hello:    'details.hello_world'
+                },
+                where: {
+                    'user.id': 3
+                }
+            });
+
+            this.queryMustBe(
+                'SELECT `user`.`id` AS `id`,`user`.`user_name` AS `userName`,`details`.`hello_world` AS `hello` ' +
+                'FROM `user` AS `user` ' +
+                'LEFT JOIN `user_details` AS `details` ON `user`.`id` = `details`.`user_id` ' +
+                'WHERE `user`.`id` = 3');
         });
 
     });
