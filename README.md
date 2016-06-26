@@ -13,15 +13,17 @@ Option "where" has "equal" default compare method, but you can use another:
   * $gte - `{ age: { $gte: 25 } }`
   * $lt - `{ age: { $lt: 25 } }`
   * $lte - `{ age: { $lte: 25 } }`
-  * $field - `{ id: { $field: 'another_id' } }` => `'`id` = `another_id`'`
+  * $field - `{ id: { $field: 'another_id' } }` => `'id = another_id'`
   * $raw - `{ position: { $raw: 'POINT(1,3)' } }`
+  * $val - `{ position: { val: 'hello' } }`
 
 You can combine few conditions (they will be combined by AND):
 `{ age: { $gt: 10, $lte: 25 } }`
 
 Note:
-`{ id: 3 }` and `{ id: { $eq: 3 } }` takes same result
-`{ product_id: null }` and `{ product_id: { $is: null } }` takes same result
+  * `{ id: 3 }` and `{ id: { $eq: 3 } }` takes same result
+  * `{ product_id: null }` and `{ product_id: { $is: null } }` takes same result
+  * in join.on `{ 't1.id': 't2.user_id' }` will be `t1.id = t2.user_id` (field comparison)
 
 ### "Select" specific options:
 Parameter **fields** can be one of:
@@ -93,7 +95,8 @@ Constructor is not directly accessible.
  *  **sqlQuery**: string
  *  **params**: Array _(optional)_
 ````javascript
-db.query('SELECT * FROM `users` WHERE `id` = ?', [12]).then(results => ...).catch(err => ...);
+db.query('SELECT * FROM `users` WHERE `id` = ?', [12])
+    .then(results => ...).catch(err => ...);
 ````
 
 #### Method "select":

@@ -173,7 +173,7 @@ describe('Query check', () => {
                     table: 'user',
                     join: {
                         table: 'details' ,
-                        on: { 'user.id': { $field: 'details.user_id' } },
+                        on: { 'user.id': 'details.user_id' },
                         type: 'left'
                     }
                 });
@@ -186,11 +186,11 @@ describe('Query check', () => {
                     table: 'user',
                     join: [{
                         table: 'details' ,
-                        on: { 'user.id': { $field: 'details.user_id' } },
+                        on: { 'user.id': 'details.user_id' },
                         type: 'left'
                     }, {
                         table: 'details2' ,
-                        on: { 'details2.user_id': { $field: 'details.user_id' } },
+                        on: { 'details2.user_id': 'details.user_id' },
                         type: 'left'
                     }]
                 });
