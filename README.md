@@ -20,6 +20,11 @@ Option "where" has "equal" default compare method, but you can use another:
 You can combine few conditions (they will be combined by AND):
 `{ age: { $gt: 10, $lte: 25 } }`
 
+Also you can use **$or** and **$and**:
+  * `{ $or: [{ field1: 3 }, { field1: 5 }] }`
+  * `{ $and: [{ field1: 3 }, { field2: 'hello' }] }`
+  * `{ $or: [ $or: [{ field1: 3 }, { field1: 5 }], { field2: 'hello' }] }`
+
 Note:
   * `{ id: 3 }` and `{ id: { $eq: 3 } }` takes same result
   * `{ product_id: null }` and `{ product_id: { $is: null } }` takes same result

@@ -147,6 +147,34 @@ describe('Query check', () => {
                 this.queryMustBe('SELECT * FROM `hello` WHERE `field` > `another_field`');
             });
 
+            it('$or', () => {
+                this.db.select({
+                    table: 'hello',
+                    where: {
+                        $or: [
+                            { 'field1': 1 },
+                            { 'field1': 2 }
+                        ]
+                    }
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` WHERE (`field1` = 1 OR `field1` = 2)');
+            });
+
+            it('$and', () => {
+                this.db.select({
+                    table: 'hello',
+                    where: {
+                        $and: [
+                            { 'field1': 1 },
+                            { 'field2': 2 }
+                        ]
+                    }
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` WHERE (`field1` = 1 AND `field2` = 2)');
+            });
+
             it('throw error if empty object', () => {
                 try {
                     this.db.select({
