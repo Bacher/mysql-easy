@@ -30,6 +30,13 @@ Parameter **fields** can be one of:
   * Array - `['id', 'user_name']`
   * Object - key - result field name, value - colomn name `{ id: 'id', userName: 'user_name' }`
   * String - `'id, user_name AS userName'` (raw format)
+  
+Note:
+  * if you use "groupBy" you can select with aggregation:
+     * `{ fieldAlias: { $count: 'field_name' } }`
+     * `{ fieldAlias: { $avg: 'field_name' } }`
+     * `{ fieldAlias: { $min: 'field_name' } }`
+     * `{ fieldAlias: { $max: 'field_name' } }`
 
 Parameter **order** can be one of:
   * Object - `{ id: 1, age: -1 }` equal is `ORDER BY id, age DESC ` 
@@ -38,6 +45,10 @@ Parameter **order** can be one of:
 Parameter **join** can be:
   * Object - `{ table: 'another_table', on: { 'main_table.field_name1: { $field: 'another_table.field_name2' } }, type: 'left' }`
   * String - `'LEFT JOIN another_table ON main_table.field_name1 = another_table.field_name2'` (raw format)
+
+Parameter **groupBy** can be:
+  * Array - `['field_name','field_name_2']`
+  * String - `'field_name, field_name_2'`
 
 ### Initial: 
 ````javascript

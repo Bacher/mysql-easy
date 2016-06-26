@@ -215,6 +215,54 @@ describe('Query check', () => {
 
         });
 
+        describe('group', () => {
+
+            it('as array', () => {
+                this.db.select({
+                    table: 'hello',
+                    groupBy: ['some_field']
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` GROUP BY `some_field`');
+            });
+
+            it('as raw', () => {
+                this.db.select({
+                    table: 'hello',
+                    groupBy: '`some_field`'
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` GROUP BY `some_field`');
+            });
+
+            it('count', () => {
+                this.db.select({
+                    table: 'hello',
+                    fields: {
+                        id: 'some_field',
+                        cnt: { $count: 'another' }
+                    },
+                    groupBy: ['some_field']
+                });
+
+                this.queryMustBe('SELECT `some_field` AS `id`,COUNT(`another`) AS `cnt` FROM `hello` GROUP BY `some_field`');
+            });
+
+            it('count', () => {
+                this.db.select({
+                    table: 'hello',
+                    fields: {
+                        id: 'some_field',
+                        cnt: { $count: { $raw: 'super_field' } }
+                    },
+                    groupBy: ['some_field']
+                });
+
+                this.queryMustBe('SELECT `some_field` AS `id`,COUNT(super_field) AS `cnt` FROM `hello` GROUP BY `some_field`');
+            });
+
+        });
+
         describe('order', () => {
 
             it('as raw', () => {
