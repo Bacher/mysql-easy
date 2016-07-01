@@ -415,3 +415,39 @@ describe('Query check', () => {
 
 });
 
+describe('Helpers', () => {
+
+    describe('make-plain-objects', () => {
+
+        class Wrapper {
+            constructor() {
+                this.a = 3;
+                this.b = 4;
+            }
+        }
+
+        afterEach(() => {
+            this.db.setOption('make-plain-objects', false);
+        });
+
+        it('without make-plain-objects', () => {
+            const results = this.db._processResults([new Wrapper(), new Wrapper()]);
+
+            eq(results.length, 2);
+            eq(results[0].a, 3);
+            assert(results[0] instanceof Wrapper);
+        });
+
+        it('make-plain-objects', () => {
+            this.db.setOption('make-plain-objects', true);
+
+            const results = this.db._processResults([new Wrapper(), new Wrapper()]);
+
+            eq(results.length, 2);
+            eq(results[0].a, 3);
+            assert(!(results[0] instanceof Wrapper));
+        });
+
+    });
+
+});
