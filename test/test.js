@@ -1,7 +1,7 @@
 const assert = require('chai').assert;
 const mysql = require('../lib/mysql-easy');
 
-/* global describe, beforeEach, it  */
+/* global describe, beforeEach, it */
 
 const mysqlConnection = {
     format:   mysql.format.bind(mysql),

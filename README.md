@@ -203,3 +203,20 @@ db.end();
 ````javascript
 var underlyingMysqlConnection = db.unwrap();
 ````
+
+## Transactions:
+### Method "createTransaction"
+**returns** MySQL like instance with 2 additional methods: "commit" and "rollback"
+````javascript
+db.createTransaction().then(transaction => {
+    transaction.update(...).then(() => {
+        return transaction.insert(...);        
+    }).then(() => {
+        return transaction.commit();   
+    }).catch(err => {
+        transaction.rollback();
+        console.log('Something going wrong', err);
+    });
+});
+````
+You must call commit either rollback at once.
