@@ -413,6 +413,46 @@ describe('Query check', () => {
 
     });
 
+    describe('complex queries', () => {
+
+        it('#1', () => {
+            this.db.select({
+                table:  'user',
+                fields: {
+                    id:                'user.id',
+                    balance:           'user.balance',
+                    lastLoadedMatchId: 'user.lastLoadedMatchId',
+                    betId:             'bet.id',
+                    bet:               'bet.bet',
+                    timestamp:         'bet.timestamp'
+                },
+                join:   {
+                    table: 'bet',
+                    on:    { 'user.id': 'bet.user_id', 'bet.matchId': { $is: null } },
+                    type:  'left'
+                },
+                where:  {
+                    'steamId': 123
+                },
+                limit:  1
+            });
+
+            this.queryMustBe(
+                'SELECT ' +
+                    '`user`.`id` AS `id`,' +
+                    '`user`.`balance` AS `balance`,' +
+                    '`user`.`lastLoadedMatchId` AS `lastLoadedMatchId`,' +
+                    '`bet`.`id` AS `betId`,' +
+                    '`bet`.`bet` AS `bet`,' +
+                    '`bet`.`timestamp` AS `timestamp` ' +
+                'FROM `user` ' +
+                'LEFT JOIN `bet` ON `user`.`id` = `bet`.`user_id` AND `bet`.`matchId` IS NULL ' +
+                'WHERE `steamId` = 123 ' +
+                'LIMIT 1');
+        });
+
+    });
+
 });
 
 describe('Helpers', () => {

@@ -1,63 +1,8 @@
 # MySQL driver wrapper for easy work (with promises)
 
-### General options:
-Parameter **where** in all methods can be one of:
-  * Object - `{ id: 12, age: 27 }` 
-  * String - `'id = 12 AND age < 27'` (raw format)
-  
-Option "where" has "equal" default compare method, but you can use another:
-  * $in - `{ id: { $in: [1,2,5] } }`
-  * $is - `{ product_id: { $is: null } }`
-  * $isNot - `{ product_id: { $isNot: null } }`
-  * $gt - `{ age: { $gt: 25 } }`
-  * $gte - `{ age: { $gte: 25 } }`
-  * $lt - `{ age: { $lt: 25 } }`
-  * $lte - `{ age: { $lte: 25 } }`
-  * $field - `{ id: { $field: 'another_id' } }` => `'id = another_id'`
-  * $raw - `{ position: { $raw: 'POINT(1,3)' } }`
-  * $val - `{ position: { val: 'hello' } }`
-
-You can combine few conditions (they will be combined by AND):
-`{ age: { $gt: 10, $lte: 25 } }`
-
-Also you can use **$or** and **$and**:
-  * `{ $or: [{ field1: 3 }, { field1: 5 }] }`
-  * `{ $and: [{ field1: 3 }, { field2: 'hello' }] }`
-  * `{ $or: [ $or: [{ field1: 3 }, { field1: 5 }], { field2: 'hello' }] }`
-
-Note:
-  * `{ id: 3 }` and `{ id: { $eq: 3 } }` takes same result
-  * `{ product_id: null }` and `{ product_id: { $is: null } }` takes same result
-  * in join.on `{ 't1.id': 't2.user_id' }` will be `t1.id = t2.user_id` (field comparison)
-
-### "Select" specific options:
-Parameter **fields** can be one of:
-  * Array - `['id', 'user_name']`
-  * Object - key - result field name, value - colomn name `{ id: 'id', userName: 'user_name' }`
-  * String - `'id, user_name AS userName'` (raw format)
-  
-Note:
-  * if you use "groupBy" you can select with aggregation:
-     * `{ fieldAlias: { $count: 'field_name' } }`
-     * `{ fieldAlias: { $avg: 'field_name' } }`
-     * `{ fieldAlias: { $min: 'field_name' } }`
-     * `{ fieldAlias: { $max: 'field_name' } }`
-
-Parameter **order** can be one of:
-  * Object - `{ id: 1, age: -1 }` equal is `ORDER BY id, age DESC ` 
-  * String - `'ORDER BY balance DESC, user_id'` (raw format)
-
-Parameter **join** can be:
-  * Object - `{ table: 'another_table', on: { 'main_table.field_name1: { $field: 'another_table.field_name2' } }, type: 'left' }`
-  * String - `'LEFT JOIN another_table ON main_table.field_name1 = another_table.field_name2'` (raw format)
-
-Parameter **groupBy** can be:
-  * Array - `['field_name','field_name_2']`
-  * String - `'field_name, field_name_2'`
-
 ### Initial: 
 ````javascript
-var mysqlEasy = require('mysql-easy');
+const mysqlEasy = require('mysql-easy');
 ````
 
 ## Static methods:
@@ -65,7 +10,7 @@ var mysqlEasy = require('mysql-easy');
 #### Method "createConnection" and "createPool":
 (arguments are similar to static methods with same names in module "mysql": https://www.npmjs.com/package/mysql#establishing-connections)
 ````javascript
-var db = mysqlEasy.createPool({
+const db = mysqlEasy.createPool({
     host:     'localhost',
     database: 'test',
     user:     'root',
@@ -75,7 +20,7 @@ var db = mysqlEasy.createPool({
 
 #### Method "wrap":
 ````javascript
-var db = mysqlEasy.wrap(mysql.createPool(...));
+const db = mysqlEasy.wrap(mysql.createPool(...));
 ````
 
 #### Method "format":
@@ -201,7 +146,7 @@ db.end();
 
 #### Method "unwrap":
 ````javascript
-var underlyingMysqlConnection = db.unwrap();
+const underlyingMysqlConnection = db.unwrap();
 ````
 
 ## Transactions:
@@ -220,3 +165,58 @@ db.createTransaction().then(transaction => {
 });
 ````
 You must call commit either rollback at once.
+
+### "Select" specific options:
+Parameter **fields** can be one of:
+  * Array - `['id', 'user_name']`
+  * Object - key - result field name, value - colomn name `{ id: 'id', userName: 'user_name' }`
+  * String - `'id, user_name AS userName'` (raw format)
+  
+Note:
+  * if you use "groupBy" you can select with aggregation:
+     * `{ fieldAlias: { $count: 'field_name' } }`
+     * `{ fieldAlias: { $avg: 'field_name' } }`
+     * `{ fieldAlias: { $min: 'field_name' } }`
+     * `{ fieldAlias: { $max: 'field_name' } }`
+
+Parameter **order** can be one of:
+  * Object - `{ id: 1, age: -1 }` equal is `ORDER BY id, age DESC ` 
+  * String - `'ORDER BY balance DESC, user_id'` (raw format)
+
+Parameter **join** can be:
+  * Object - `{ table: 'another_table', on: { 'main_table.field_name1: { $field: 'another_table.field_name2' } }, type: 'left' }`
+  * String - `'LEFT JOIN another_table ON main_table.field_name1 = another_table.field_name2'` (raw format)
+
+Parameter **groupBy** can be:
+  * Array - `['field_name','field_name_2']`
+  * String - `'field_name, field_name_2'`
+
+### General options:
+Parameter **where** in all methods can be one of:
+  * Object - `{ id: 12, age: 27 }` 
+  * String - `'id = 12 AND age < 27'` (raw format)
+  
+Option "where" has "equal" default compare method, but you can use another:
+  * $in - `{ id: { $in: [1,2,5] } }`
+  * $is - `{ product_id: { $is: null } }`
+  * $isNot - `{ product_id: { $isNot: null } }`
+  * $gt - `{ age: { $gt: 25 } }`
+  * $gte - `{ age: { $gte: 25 } }`
+  * $lt - `{ age: { $lt: 25 } }`
+  * $lte - `{ age: { $lte: 25 } }`
+  * $field - `{ id: { $field: 'another_id' } }` => `'id = another_id'`
+  * $raw - `{ position: { $raw: 'POINT(1,3)' } }`
+  * $val - `{ position: { val: 'hello' } }`
+
+You can combine few conditions (they will be combined by AND):
+`{ age: { $gt: 10, $lte: 25 } }`
+
+Also you can use **$or** and **$and**:
+  * `{ $or: [{ field1: 3 }, { field1: 5 }] }`
+  * `{ $and: [{ field1: 3 }, { field2: 'hello' }] }`
+  * `{ $or: [ $or: [{ field1: 3 }, { field1: 5 }], { field2: 'hello' }] }`
+
+Note:
+  * `{ id: 3 }` and `{ id: { $eq: 3 } }` takes same result
+  * `{ product_id: null }` and `{ product_id: { $is: null } }` takes same result
+  * in join.on `{ 't1.id': 't2.user_id' }` will be `t1.id = t2.user_id` (field comparison)
