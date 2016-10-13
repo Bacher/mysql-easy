@@ -106,6 +106,19 @@ describe('Query check', () => {
                 this.queryMustBe('SELECT * FROM `hello` WHERE `field_1` = 100');
             });
 
+            it('$like', () => {
+                this.db.select({
+                    table: 'hello',
+                    where: {
+                        'field': {
+                            $like: '%TT%'
+                        }
+                    }
+                });
+
+                this.queryMustBe('SELECT * FROM `hello` WHERE `field` LIKE \'%TT%\'');
+            });
+
             it('$gt', () => {
                 this.db.select({
                     table: 'hello',
