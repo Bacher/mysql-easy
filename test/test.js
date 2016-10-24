@@ -466,6 +466,21 @@ describe('Query check', () => {
 
     });
 
+    it('#2', () => {
+        this.db.select({
+            fields: {
+                cityId: 'city_id',
+                date:   {
+                    $max: 'tsc'
+                }
+            },
+            table:  'mass_push_send',
+            groupBy:['city_id']
+        });
+
+        this.queryMustBe('SELECT `city_id` AS `cityId`,MAX(`tsc`) AS `date` FROM `mass_push_send` GROUP BY `city_id`');
+    });
+
 });
 
 describe('Helpers', () => {
