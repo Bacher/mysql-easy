@@ -63,6 +63,7 @@ db.query('SELECT * FROM `users` WHERE `id` = ?', [12])
 #### Method "select":
  *  **params**: Object
      *  **table**: string
+     *  **distinct**: boolean _(optional)_
      *  **fields**: Array|Object|string _(optional)_
      *  **where**: Object|string _(optional)_
      *  **order**: Object|string _(optional)_
@@ -113,6 +114,7 @@ db.selectExactOne({
 #### Method "insert":
  *  **tableName**: string
  *  **data**: Object
+ *  **flags**: Object
 ````javascript
 db.insert('users', {
     user_name: 'user#331',
@@ -125,7 +127,8 @@ db.insert('users', {
 #### Method "update":
  *  **tableName**: string
  *  **data**: Object
- *  **where**: Object|string
+ *  **where**: Object|string _(optional)_
+ *  **flags**: Object _(optional)_
 ````javascript
 db.update('users', newUserState, {
     id: 12
@@ -178,6 +181,7 @@ Note:
      * `{ fieldAlias: { $avg: 'field_name' } }`
      * `{ fieldAlias: { $min: 'field_name' } }`
      * `{ fieldAlias: { $max: 'field_name' } }`
+     * `{ fieldAlias: { $sum: 'field_name' } }`
 
 Parameter **order** can be one of:
   * Object - `{ id: 1, age: -1 }` equal is `ORDER BY id, age DESC ` 
@@ -220,3 +224,12 @@ Note:
   * `{ id: 3 }` and `{ id: { $eq: 3 } }` takes same result
   * `{ product_id: null }` and `{ product_id: { $is: null } }` takes same result
   * in join.on `{ 't1.id': 't2.user_id' }` will be `t1.id = t2.user_id` (field comparison)
+
+### Flags
+**insert** and **update** can take last argument "flags":
+````javascript
+{
+  ignore: true
+}
+````
+for statements like `INSERT IGNORE INTO table1 ...`
