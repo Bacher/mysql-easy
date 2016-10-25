@@ -54,11 +54,11 @@ describe('Query check', () => {
 
             it('as raw', () => {
                 this.db.select({
-                    fields: 'field1',
+                    fields: 'SUM(field1)',
                     table: 'hello'
                 });
 
-                this.queryMustBe('SELECT field1 FROM `hello`');
+                this.queryMustBe('SELECT SUM(field1) FROM `hello`');
             });
 
             it('as array', () => {
@@ -80,6 +80,43 @@ describe('Query check', () => {
                 });
 
                 this.queryMustBe('SELECT `field_1` AS `field1`,`field_2` AS `field2` FROM `hello`');
+            });
+
+            describe('aggregation', () => {
+
+                it('$max', () => {
+                    this.db.select({
+                        table:   'table1',
+                        fields:  {
+                            id:     'id',
+                            field1: { $max: 'field_1' }
+                        }
+                    });
+                    this.queryMustBe("SELECT `id` AS `id`,MAX(`field_1`) AS `field1` FROM `table1`");
+                });
+
+                it('$avg', () => {
+                    this.db.select({
+                        table:   'table1',
+                        fields:  {
+                            id:     'id',
+                            field1: { $avg: 'field_1' }
+                        }
+                    });
+                    this.queryMustBe("SELECT `id` AS `id`,AVG(`field_1`) AS `field1` FROM `table1`");
+                });
+
+                it('$count', () => {
+                    this.db.select({
+                        table:   'table1',
+                        fields:  {
+                            id:     'id',
+                            field1: { $count: 'field_1' }
+                        }
+                    });
+                    this.queryMustBe('SELECT `id` AS `id`,COUNT(`field_1`) AS `field1` FROM `table1`');
+                });
+
             });
 
         });
@@ -336,6 +373,7 @@ describe('Query check', () => {
         it('select', () => {
             this.db.select({
                 table:  'myTableName',
+                distinct: true,
                 fields: {
                     id:     'id',
                     userId: 'user_id'
@@ -350,7 +388,7 @@ describe('Query check', () => {
             });
 
             this.queryMustBe(
-                "SELECT `id` AS `id`,`user_id` AS `userId` " +
+                "SELECT DISTINCT `id` AS `id`,`user_id` AS `userId` " +
                 "FROM `myTableName` " +
                 "WHERE `id` = 'helloWorld' AND `account_name` = 'spy007' " +
                 "ORDER BY `id`");
@@ -376,16 +414,55 @@ describe('Query check', () => {
                 "LIMIT 1");
         });
 
+        describe('insert', () => {
+            it('complex', () => {
+                this.db.insert('myTableName', {
+                    'id':           'helloWorld',
+                    'account_name': 'spy007',
+                    'pos1':         { $raw: 'POINT(1,2)' },
+                    'pos2':         { $point: { x: 10, y: 13 } },
+                    'pos3':         { $point: [4, 5] }
+                });
 
-        it('insert', () => {
-            this.db.insert('myTableName', {
-                'id': 'helloWorld',
-                'account_name': 'spy007'
+                this.queryMustBe(
+                    "INSERT INTO `myTableName` " +
+                    "SET `id`='helloWorld',`account_name`='spy007',`pos1`=POINT(1,2),`pos2`=POINT(10,13),`pos3`=POINT(4,5)");
             });
 
-            this.queryMustBe(
-                "INSERT INTO `myTableName` " +
-                "SET `id` = 'helloWorld', `account_name` = 'spy007'");
+            it('with "ignore" flag', () => {
+                this.db.insert('table1', {
+                    'id': 'helloWorld'
+                }, { ignore: true });
+
+                this.queryMustBe("INSERT IGNORE INTO `table1` SET `id`='helloWorld'");
+            });
+        });
+
+        describe('update', () => {
+
+            it('simple', () => {
+                this.db.update('myTableName', {
+                    'id': 'helloWorld',
+                    'account_name': 'spy007',
+                    'pos1': { $raw: 'POINT(1,2)' },
+                    'pos2': { $point: { x: 10, y: 13 } },
+                    'pos3': { $point: [4, 5] },
+                    'from_field': { $field: 'src_field' }
+                });
+
+                this.queryMustBe(
+                    "UPDATE `myTableName` " +
+                    "SET `id`='helloWorld',`account_name`='spy007',`pos1`=POINT(1,2),`pos2`=POINT(10,13),`pos3`=POINT(4,5),`from_field`=`src_field`");
+            });
+
+            it('with "ignore" flag', () => {
+                this.db.update('myTableName', {
+                    'id': 'helloWorld',
+                }, null, { ignore: true });
+
+                this.queryMustBe("UPDATE IGNORE `myTableName` SET `id`='helloWorld'");
+            });
+
         });
 
         it('delete', () => {
@@ -422,6 +499,12 @@ describe('Query check', () => {
                 'FROM `user` AS `user` ' +
                 'LEFT JOIN `user_details` AS `details` ON `user`.`id` = `details`.`user_id` ' +
                 'WHERE `user`.`id` = 3');
+        });
+
+        it('truncate', () => {
+            this.db.truncate('table_1');
+
+            this.queryMustBe('TRUNCATE `table_1`');
         });
 
     });
@@ -479,6 +562,28 @@ describe('Query check', () => {
         });
 
         this.queryMustBe('SELECT `city_id` AS `cityId`,MAX(`tsc`) AS `date` FROM `mass_push_send` GROUP BY `city_id`');
+    });
+
+    it('#3', () => {
+        this.db.select({
+            table:   'myTableName',
+            fields:  {
+                id:     'id',
+                userId: { $max: 'user_id' }
+            },
+            where:   {
+                'id': 'helloWorld'
+            },
+            groupBy: [
+                'id'
+            ]
+        });
+
+        this.queryMustBe(
+            "SELECT `id` AS `id`,MAX(`user_id`) AS `userId` " +
+            "FROM `myTableName` " +
+            "WHERE `id` = 'helloWorld' " +
+            "GROUP BY `id`");
     });
 
 });
