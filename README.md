@@ -106,7 +106,7 @@ db.selectExactOne({
     table: 'users',
     fields: ['id', 'user_name'],
     where: { id: 12 }
-).catch(err => {
+}).catch(err => {
     console.error(err);
 });
 ````
@@ -114,7 +114,7 @@ db.selectExactOne({
 #### Method "insert":
  *  **tableName**: string
  *  **data**: Object
- *  **flags**: Object
+ *  **flags**: Object _(optional)_
 ````javascript
 db.insert('users', {
     user_name: 'user#331',
@@ -176,12 +176,12 @@ Parameter **fields** can be one of:
   * String - `'id, user_name AS userName'` (raw format)
   
 Note:
-  * if you use "groupBy" you can select with aggregation:
-     * `{ fieldAlias: { $count: 'field_name' } }`
-     * `{ fieldAlias: { $avg: 'field_name' } }`
-     * `{ fieldAlias: { $min: 'field_name' } }`
-     * `{ fieldAlias: { $max: 'field_name' } }`
-     * `{ fieldAlias: { $sum: 'field_name' } }`
+  * if you use "group" you can select with aggregation:
+     * `{ fieldName: { $count: 'field_name' } }`
+     * `{ fieldName: { $avg: 'field_name' } }`
+     * `{ fieldName: { $min: 'field_name' } }`
+     * `{ fieldName: { $max: 'field_name' } }`
+     * `{ fieldName: { $sum: 'field_name' } }`
 
 Parameter **order** can be one of:
   * Object - `{ id: 1, age: -1 }` equal is `ORDER BY id, age DESC ` 
@@ -191,7 +191,7 @@ Parameter **join** can be:
   * Object - `{ table: 'another_table', on: { 'main_table.field_name1: { $field: 'another_table.field_name2' } }, type: 'left' }`
   * String - `'LEFT JOIN another_table ON main_table.field_name1 = another_table.field_name2'` (raw format)
 
-Parameter **groupBy** can be:
+Parameter **group** can be:
   * Array - `['field_name','field_name_2']`
   * String - `'field_name, field_name_2'`
 

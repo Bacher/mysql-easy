@@ -394,6 +394,27 @@ describe('Query check', () => {
                 "ORDER BY `id`");
         });
 
+        it('selectOne', () => {
+            this.db.selectOne({
+                table: 'table_1',
+                fields: {
+                    id:     'id',
+                    userId: 'user_id'
+                },
+                where: {
+                    'id': 'helloWorld',
+                    'account_name': 'spy007'
+                },
+                offset: 3
+            });
+
+            this.queryMustBe(
+                "SELECT `id` AS `id`,`user_id` AS `userId` " +
+                "FROM `table_1` " +
+                "WHERE `id` = 'helloWorld' AND `account_name` = 'spy007' " +
+                "LIMIT 3,1");
+        });
+
         it('selectExactOne', () => {
             this.db.selectExactOne({
                 table: 'myTableName',
@@ -530,7 +551,7 @@ describe('Query check', () => {
                 where:  {
                     'steamId': 123
                 },
-                limit:  1
+                limit: 1
             });
 
             this.queryMustBe(
