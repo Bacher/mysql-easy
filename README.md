@@ -75,7 +75,7 @@ db.select({
     fields: ['id', 'user_name'],
     where: { id: 12 },
     order: { id: -1 }
-).then(results => ...);
+}).then(results => ...);
 ````
 
 #### Method "selectOne":
@@ -89,7 +89,7 @@ db.selectOne({
     table: 'users',
     fields: { id: 'id', userName: 'user_name' },
     where: { id: 12 }
-).then(user => {
+}).then(user => {
     console.log(user.id);
     console.log(user.userName);
 });
@@ -172,7 +172,7 @@ You must call commit either rollback at once.
 ### "Select" specific options:
 Parameter **fields** can be one of:
   * Array - `['id', 'user_name']`
-  * Object - key - result field name, value - colomn name `{ id: 'id', userName: 'user_name' }`
+  * Object - key - result field name, value - column name `{ id: 'id', userName: 'user_name' }`
   * String - `'id, user_name AS userName'` (raw format)
   
 Note:
