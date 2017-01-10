@@ -1,4 +1,5 @@
 # MySQL driver wrapper for easy work (with promises)
+[![NSP Status](https://nodesecurity.io/orgs/my-repositories/projects/63a3c81c-3594-4d2c-bd47-25c87a9470d5/badge)](https://nodesecurity.io/orgs/my-repositories/projects/63a3c81c-3594-4d2c-bd47-25c87a9470d5)
 
 ### Initial: 
 ````javascript
